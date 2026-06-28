@@ -198,6 +198,7 @@ export default function UploadPage() {
             <CatMap
               cats={[]}
               pinMode={true}
+              selectedPin={pin}
               onPinSelect={(lat, lng) => setPin({ lat, lng })}
             />
           </div>

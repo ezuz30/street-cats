@@ -38,7 +38,7 @@ export default function Navbar() {
         🐱 StreetCats
       </Link>
       <div className="flex items-center gap-4 text-sm font-medium">
-        <Link href="/" className="hover:text-orange-100">Map</Link>
+        <Link href="/map" className="hover:text-orange-100">Map</Link>
         {user ? (
           <>
             <Link href="/upload" className="bg-white text-orange-500 px-3 py-1 rounded-full hover:bg-orange-50">
