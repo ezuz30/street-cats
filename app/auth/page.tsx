@@ -21,13 +21,16 @@ export default function AuthPage() {
     setLoading(true)
 
     if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp({ email, password })
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { username: username || email.split('@')[0] } },
+      })
       if (error) { setError(error.message); setLoading(false); return }
-      if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          username: username || email.split('@')[0],
-        })
+      if (data.session) {
+        // Email confirmation is off — user is signed in immediately
+        router.push('/')
+      } else {
         setMessage('Check your email to confirm your account, then sign in.')
       }
     } else {
