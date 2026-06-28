@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import StatusBadge from '@/components/StatusBadge'
+import Logo from '@/components/Logo'
 import type { CatStatus } from '@/lib/database.types'
 
 type RecentCat = {
@@ -17,6 +18,7 @@ type RecentCat = {
 export default function HomePage() {
   const [stats, setStats] = useState({ spotted: 0, adopted: 0, scouts: 0 })
   const [recent, setRecent] = useState<RecentCat[]>([])
+  const [loadingRecent, setLoadingRecent] = useState(true)
 
   useEffect(() => {
     // Impact stats
@@ -49,6 +51,7 @@ export default function HomePage() {
           if (cards.length >= 6) break
         }
         setRecent(cards)
+        setLoadingRecent(false)
       })
   }, [])
 
@@ -144,7 +147,19 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {recent.length === 0 ? (
+          {loadingRecent ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="rounded-2xl overflow-hidden bg-white border border-gray-100">
+                  <div className="skeleton aspect-square" />
+                  <div className="p-4 space-y-2">
+                    <div className="skeleton h-4 w-2/3 rounded" />
+                    <div className="skeleton h-3 w-full rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : recent.length === 0 ? (
             <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed">
               <div className="text-5xl mb-3">🐈</div>
               <p className="text-gray-600 font-medium">No cats reported yet.</p>
@@ -162,7 +177,7 @@ export default function HomePage() {
                 <Link
                   key={cat.id}
                   href={`/cats/${cat.id}`}
-                  className="group rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-shadow"
+                  className="group fade-up rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-shadow"
                 >
                   <div className="aspect-square overflow-hidden bg-gray-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -230,7 +245,9 @@ export default function HomePage() {
 
       {/* ---------- FOOTER ---------- */}
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm">
-        <p className="text-white font-heading font-bold text-lg mb-1">🐱 StreetCats</p>
+        <div className="flex justify-center text-white text-lg mb-2">
+          <Logo />
+        </div>
         <p>Made with care for the cats of our streets.</p>
       </footer>
     </div>

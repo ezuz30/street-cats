@@ -22,6 +22,27 @@ export default function CatPage() {
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [adminMode, setAdminMode] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : ''
+    const shareData = {
+      title: cat?.name ?? 'A street cat needs a home',
+      text: 'Help this street cat find a home 🐱',
+      url,
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+      } catch {
+        /* user cancelled */
+      }
+    } else {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
@@ -78,8 +99,14 @@ export default function CatPage() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">{cat.name ?? 'Street Cat'}</h1>
-          <div className="mt-1">
+          <div className="mt-1 flex items-center gap-2">
             <StatusBadge status={cat.status} />
+            <button
+              onClick={handleShare}
+              className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              {copied ? '✓ Link copied' : '🔗 Share'}
+            </button>
           </div>
         </div>
         {(isPhotographer || adminMode) && (

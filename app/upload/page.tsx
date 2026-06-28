@@ -23,8 +23,28 @@ export default function UploadPage() {
   const [clusterCatId, setClusterCatId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [locating, setLocating] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const useMyLocation = () => {
+    if (!('geolocation' in navigator)) {
+      setError('Your browser does not support location.')
+      return
+    }
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setPin({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        setLocating(false)
+      },
+      () => {
+        setError('Could not get your location — please allow access or pin manually.')
+        setLocating(false)
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    )
+  }
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -124,7 +144,14 @@ export default function UploadPage() {
                 </div>
               )}
             </div>
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleFile}
+            />
           </div>
 
           <div>
@@ -191,14 +218,25 @@ export default function UploadPage() {
 
         {/* Right: map pin */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Pin the location * <span className="text-gray-400 font-normal">(click on the map)</span>
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium text-gray-700">
+              Pin the location * <span className="text-gray-400 font-normal">(tap the map)</span>
+            </label>
+            <button
+              type="button"
+              onClick={useMyLocation}
+              disabled={locating}
+              className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors disabled:opacity-60"
+            >
+              {locating ? '📍 Locating…' : '📍 Use my current location'}
+            </button>
+          </div>
           <div className="rounded-xl overflow-hidden border" style={{ height: '420px' }}>
             <CatMap
               cats={[]}
               pinMode={true}
               selectedPin={pin}
+              flyTo={pin}
               onPinSelect={(lat, lng) => setPin({ lat, lng })}
             />
           </div>

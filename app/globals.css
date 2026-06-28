@@ -25,7 +25,28 @@ html {
 
 /* Keep Leaflet's custom div markers free of the default white box */
 .cat-pin,
-.selected-pin {
+.selected-pin,
+.you-are-here {
   background: transparent;
   border: none;
+}
+
+/* Gentle fade-up for cards/sections on mount */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+/* Loading skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f1f1f1 25%, #e6e6e6 37%, #f1f1f1 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
@@ -14,6 +14,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'StreetCats — Help Street Cats Find a Home',
   description: 'Spot a street cat, share its location, and help it get adopted.',
+  appleWebApp: { capable: true, title: 'StreetCats', statusBarStyle: 'default' },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#f97316',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

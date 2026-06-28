@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import Logo from '@/components/Logo'
 import type { User } from '@supabase/supabase-js'
 
 export default function Navbar() {
@@ -34,8 +35,8 @@ export default function Navbar() {
 
   return (
     <nav className="bg-orange-500 text-white px-6 py-3 flex items-center justify-between shadow-md">
-      <Link href="/" className="text-xl font-bold tracking-tight flex items-center gap-2">
-        🐱 StreetCats
+      <Link href="/" className="text-xl">
+        <Logo />
       </Link>
       <div className="flex items-center gap-4 text-sm font-medium">
         <Link href="/map" className="hover:text-orange-100">Map</Link>
